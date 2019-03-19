@@ -1,10 +1,17 @@
 package Steps;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.pt.Dado;
 import cucumber.api.java.pt.Então;
@@ -41,7 +48,6 @@ public class InserirContasSteps {
 	public void visualizo_a_página_inicial() throws Throwable {
 		String texto = driver.findElement(By.xpath("/html/body/div[1]")).getText();
 		Assert.assertEquals("Bem vindo, Faby!", texto);
-		
 
 	}
 
@@ -58,9 +64,9 @@ public class InserirContasSteps {
 	@Quando("^informo a conta \"([^\"]*)\"$")
 	public void informo_a_conta(String arg1) throws Throwable {
 		driver.findElement(By.id("nome")).sendKeys(arg1);
-		
+
 	}
-		
+
 	@Quando("^seleciono Salvar$")
 	public void seleciono_Salvar() throws Throwable {
 		driver.findElement(By.tagName("button")).click();
@@ -73,27 +79,45 @@ public class InserirContasSteps {
 	}
 
 // segundo cenario
-	
+
 	@Então("^sou notificado que o nome da conta é obrigatório$")
 	public void souNotificadoQueONomeDaContaÉObrigatório() throws Throwable {
 		String texto = driver.findElement(By.xpath("//div[@class='alert alert-danger']")).getText();
 		Assert.assertEquals("Informe o nome da conta", texto);
 	}
-	
+
 // terceiro cenario	
 
 	@Então("^sou notificado que já existe uma conta com esse nome$")
 	public void souNotificadoQueJáExisteUmaContaComEsseNome() throws Throwable {
-		String texto = driver.findElement(By.xpath("//div[@class=\"alert alert-danger\"]")).getText();
+		String texto = driver.findElement(By.xpath("//div[@class='alert alert-danger']")).getText();
 		Assert.assertEquals("Já existe uma conta com esse nome!", texto);
+
+	}
+
+	@Então("^recebo a mensagem \"([^\"]*)\"$")
+	public void receboAMensagem(String arg1) throws Throwable {
+		String texto = driver.findElement(By.xpath("//div[starts-with(@class, 'alert alert-')]")).getText();
+		Assert.assertEquals(arg1, texto);
+	}
+
+	@After(order = 1)
+	public void screenshot(Scenario cenario) {
+		File file = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+		try {
+			FileUtils.copyFile(file, new File("target/screenshots/"+cenario.getId()+".jpg"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 	}
-			
-	@After
+	
+
+
+	@After (order = 0)
 	public void fecharBrowser() {
 		driver.quit();
-		
+
 	}
-	
-	
+
 }

@@ -16,7 +16,8 @@ import cucumber.api.junit.Cucumber;
 		features = "src/main/resources/Features/InserirConta.feature", glue = "Steps", tags = { "~@ignore" }, plugin = {
 				"pretty" }, monochrome = true, // serve para deixar o log mais harmoniozo
 //esse plugin irá juntar o nome do metodo sem usar underline
-		snippets = SnippetType.CAMELCASE, dryRun = false, // definido true para pegar somento o passo que falta
+		snippets = SnippetType.CAMELCASE,
+		dryRun = false, // definido true para pegar somento o passo que falta
 		strict = false
 
 )
